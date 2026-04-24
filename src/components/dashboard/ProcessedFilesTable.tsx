@@ -52,9 +52,9 @@ export const ProcessedFilesTable = () => {
                       <TooltipTrigger asChild>
                         <button
                           type="button"
-                          className="inline-flex items-center gap-1.5 rounded-lg border border-border/60 bg-secondary/60 px-3 py-1.5 text-xs font-medium text-foreground transition hover:bg-secondary"
+                          className="group/btn inline-flex items-center gap-1.5 rounded-lg border border-border/60 bg-secondary/60 px-3 py-1.5 text-xs font-medium text-foreground transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/50 hover:bg-secondary hover:text-primary hover:shadow-[0_0_20px_-6px_hsl(var(--primary)/0.6)]"
                         >
-                          <Eye className="h-3.5 w-3.5" />
+                          <Eye className="h-3.5 w-3.5 transition-transform duration-300 group-hover/btn:scale-125" />
                           View
                         </button>
                       </TooltipTrigger>
