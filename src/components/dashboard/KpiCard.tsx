@@ -21,10 +21,10 @@ const iconMap: Record<NonNullable<KpiCardProps["icon"]>, LucideIcon> = {
 };
 
 const variantRing: Record<Variant, string> = {
-  neutral: "ring-border/60",
-  success: "ring-success/30 shadow-[0_0_40px_-10px_hsl(var(--success)/0.35)]",
-  error: "ring-error/30 shadow-[0_0_40px_-10px_hsl(var(--error)/0.30)]",
-  info: "ring-border/60",
+  neutral: "ring-border hover:ring-foreground/20 hover:shadow-[0_12px_40px_-12px_hsl(var(--foreground)/0.18)]",
+  success: "ring-success/40 shadow-[0_8px_30px_-12px_hsl(var(--success)/0.35)] hover:shadow-[0_14px_44px_-12px_hsl(var(--success)/0.45)]",
+  error: "ring-error/40 shadow-[0_8px_30px_-12px_hsl(var(--error)/0.30)] hover:shadow-[0_14px_44px_-12px_hsl(var(--error)/0.4)]",
+  info: "ring-border hover:ring-primary/40 hover:shadow-[0_12px_40px_-12px_hsl(var(--primary)/0.25)]",
 };
 
 const iconTone: Record<Variant, string> = {
@@ -36,12 +36,12 @@ const iconTone: Record<Variant, string> = {
 
 const iconWrapTone: Record<Variant, string> = {
   neutral:
-    "bg-secondary/60 ring-border/60 group-hover:bg-secondary group-hover:ring-foreground/30 group-hover:shadow-[0_0_24px_-6px_hsl(210_40%_98%/0.25)]",
+    "bg-secondary ring-border group-hover:ring-foreground/30 group-hover:shadow-[0_0_24px_-6px_hsl(var(--foreground)/0.25)]",
   success:
-    "bg-success-soft/60 ring-success/30 group-hover:bg-success-soft group-hover:ring-success/60 group-hover:shadow-[0_0_28px_-6px_hsl(var(--success)/0.55)]",
+    "bg-success-soft ring-success/40 group-hover:ring-success group-hover:shadow-[0_0_28px_-6px_hsl(var(--success)/0.55)]",
   error:
-    "bg-error-soft/60 ring-error/30 group-hover:bg-error-soft group-hover:ring-error/60 group-hover:shadow-[0_0_28px_-6px_hsl(var(--error)/0.5)]",
-  info: "bg-secondary/60 ring-border/60 group-hover:bg-secondary group-hover:ring-foreground/30 group-hover:shadow-[0_0_24px_-6px_hsl(199_89%_70%/0.45)]",
+    "bg-error-soft ring-error/40 group-hover:ring-error group-hover:shadow-[0_0_28px_-6px_hsl(var(--error)/0.5)]",
+  info: "bg-secondary ring-border group-hover:ring-primary/50 group-hover:shadow-[0_0_24px_-6px_hsl(var(--primary)/0.45)]",
 };
 
 export const KpiCard = ({
