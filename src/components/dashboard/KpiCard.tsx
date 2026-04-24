@@ -68,10 +68,10 @@ export const KpiCard = ({
           <p className="text-3xl font-bold tracking-tight text-foreground">{value}</p>
         </div>
         <div
-          className={`flex h-11 w-11 items-center justify-center rounded-xl ring-1 transition-all duration-300 group-hover:-rotate-6 group-hover:scale-110 ${iconWrapTone[variant]}`}
+          className={`flex h-11 w-11 items-center justify-center rounded-xl ring-1 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:scale-105 ${iconWrapTone[variant]}`}
         >
           <Icon
-            className={`h-5 w-5 transition-transform duration-300 ${iconTone[variant]} ${animateArrow ? "animate-soft-bounce" : ""}`}
+            className={`h-5 w-5 transition-transform duration-300 group-hover:scale-110 ${iconTone[variant]}`}
           />
         </div>
       </div>

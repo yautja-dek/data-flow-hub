@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Bell, Search, Landmark, ChevronDown, LayoutDashboard, BarChart3, FileText, Settings, LogOut } from "lucide-react";
+import { Bell, Search, Landmark, ChevronDown, LayoutDashboard, BarChart3, FileText, Settings, LogOut, Sun, Moon } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
+import { useTheme } from "@/hooks/use-theme";
 
 const navItems = [
   { label: "Dashboard", icon: LayoutDashboard },
@@ -20,13 +21,14 @@ const navItems = [
 
 export const DashboardHeader = () => {
   const [open, setOpen] = useState(false);
+  const { theme, toggle } = useTheme();
 
   return (
     <header className="glass-header sticky top-4 z-30 mx-4 rounded-2xl px-4 py-3 md:mx-6 md:px-6">
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="group flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl bg-secondary/70 ring-1 ring-border/60 transition-all duration-300 hover:scale-105 hover:bg-secondary hover:ring-primary/50 hover:shadow-[0_0_24px_-6px_hsl(var(--primary)/0.6)]">
-            <Landmark className="h-5 w-5 text-primary transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110" />
+          <div className="group flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl bg-secondary/70 ring-1 ring-border/60 transition-all duration-300 hover:-translate-y-0.5 hover:bg-secondary hover:ring-primary/50 hover:shadow-[0_0_24px_-6px_hsl(var(--primary)/0.4)]">
+            <Landmark className="h-5 w-5 text-primary transition-transform duration-300 group-hover:scale-110" />
           </div>
           <div className="hidden md:block">
             <p className="text-sm font-semibold tracking-tight text-foreground">Trade Pipeline</p>
@@ -45,10 +47,23 @@ export const DashboardHeader = () => {
         <div className="flex items-center gap-3">
           <button
             type="button"
-            className="group relative flex h-10 w-10 items-center justify-center rounded-xl bg-secondary/60 text-foreground ring-1 ring-border/60 transition-all duration-300 hover:-translate-y-0.5 hover:bg-secondary hover:ring-warning/50 hover:shadow-[0_0_24px_-6px_hsl(var(--warning)/0.6)]"
+            onClick={toggle}
+            aria-label="Toggle theme"
+            className="group relative flex h-10 w-10 items-center justify-center rounded-xl bg-secondary/60 text-foreground ring-1 ring-border/60 transition-all duration-300 hover:-translate-y-0.5 hover:bg-secondary hover:ring-primary/50 hover:shadow-[0_0_24px_-6px_hsl(var(--primary)/0.5)]"
+          >
+            {theme === "dark" ? (
+              <Sun className="h-4 w-4 transition-transform duration-300 group-hover:scale-110" />
+            ) : (
+              <Moon className="h-4 w-4 transition-transform duration-300 group-hover:scale-110" />
+            )}
+          </button>
+
+          <button
+            type="button"
+            className="group relative flex h-10 w-10 items-center justify-center rounded-xl bg-secondary/60 text-foreground ring-1 ring-border/60 transition-all duration-300 hover:-translate-y-0.5 hover:bg-secondary hover:ring-warning/50 hover:shadow-[0_0_24px_-6px_hsl(var(--warning)/0.5)]"
             aria-label="Notifications"
           >
-            <Bell className="h-4 w-4 transition-transform duration-300 group-hover:-rotate-12 group-hover:scale-110 group-hover:text-warning" />
+            <Bell className="h-4 w-4 transition-transform duration-300 group-hover:scale-110 group-hover:text-warning" />
             <span className="absolute right-2 top-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-semibold text-destructive-foreground">
               1
             </span>
