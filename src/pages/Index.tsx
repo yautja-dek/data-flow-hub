@@ -9,7 +9,7 @@ import ProcessedFilesTable from "@/components/dashboard/ProcessedFilesTable";
 
 const Index = () => {
   return (
-    <div className="min-h-screen pb-12">
+    <div className="theme-transition min-h-screen pb-12">
       <DashboardHeader />
 
       <main className="mx-auto w-full max-w-[1400px] px-4 pt-6 md:px-6">
