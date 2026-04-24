@@ -1,4 +1,5 @@
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
+import DashboardFooter from "@/components/dashboard/DashboardFooter";
 import ChartCard from "@/components/dashboard/ChartCard";
 import KpiCard from "@/components/dashboard/KpiCard";
 import RecordDistribution from "@/components/dashboard/charts/RecordDistribution";
@@ -62,6 +63,8 @@ const Index = () => {
           <ProcessedFilesTable />
         </div>
       </main>
+
+      <DashboardFooter />
     </div>
   );
 };
