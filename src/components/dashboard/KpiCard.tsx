@@ -34,6 +34,16 @@ const iconTone: Record<Variant, string> = {
   info: "text-foreground/70",
 };
 
+const iconWrapTone: Record<Variant, string> = {
+  neutral:
+    "bg-secondary/60 ring-border/60 group-hover:bg-secondary group-hover:ring-foreground/30 group-hover:shadow-[0_0_24px_-6px_hsl(210_40%_98%/0.25)]",
+  success:
+    "bg-success-soft/60 ring-success/30 group-hover:bg-success-soft group-hover:ring-success/60 group-hover:shadow-[0_0_28px_-6px_hsl(var(--success)/0.55)]",
+  error:
+    "bg-error-soft/60 ring-error/30 group-hover:bg-error-soft group-hover:ring-error/60 group-hover:shadow-[0_0_28px_-6px_hsl(var(--error)/0.5)]",
+  info: "bg-secondary/60 ring-border/60 group-hover:bg-secondary group-hover:ring-foreground/30 group-hover:shadow-[0_0_24px_-6px_hsl(199_89%_70%/0.45)]",
+};
+
 export const KpiCard = ({
   label,
   value,
@@ -50,16 +60,18 @@ export const KpiCard = ({
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay }}
-      className={`glass-card relative overflow-hidden rounded-2xl p-5 ring-1 ${variantRing[variant]}`}
+      className={`glass-card group relative overflow-hidden rounded-2xl p-5 ring-1 transition-all duration-300 hover:-translate-y-0.5 ${variantRing[variant]}`}
     >
       <div className="flex items-start justify-between gap-3">
         <div className="space-y-2">
           <p className="text-xs font-medium text-muted-foreground">{label}</p>
           <p className="text-3xl font-bold tracking-tight text-foreground">{value}</p>
         </div>
-        <div className={`flex items-center gap-2`}>
+        <div
+          className={`flex h-11 w-11 items-center justify-center rounded-xl ring-1 transition-all duration-300 group-hover:-rotate-6 group-hover:scale-110 ${iconWrapTone[variant]}`}
+        >
           <Icon
-            className={`h-6 w-6 ${iconTone[variant]} ${animateArrow ? "animate-soft-bounce" : ""}`}
+            className={`h-5 w-5 transition-transform duration-300 ${iconTone[variant]} ${animateArrow ? "animate-soft-bounce" : ""}`}
           />
         </div>
       </div>
