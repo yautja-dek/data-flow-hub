@@ -16,9 +16,8 @@ import { useTheme } from "@/hooks/use-theme";
 const navItems = [
   { label: "Dashboard", icon: LayoutDashboard, to: "/" },
   { label: "Upload", icon: UploadCloud, to: "/upload" },
-  { label: "Search", icon: SearchCode, to: "/search" },
   { label: "Results", icon: BarChart3, to: "/" },
-  { label: "Logs", icon: FileText, to: "/" },
+  { label: "Search", icon: SearchCode, to: "/search" },
   { label: "Settings", icon: Settings, to: "/" },
 ];
 
