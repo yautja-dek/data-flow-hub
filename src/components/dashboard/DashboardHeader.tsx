@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Bell, Search, Landmark, ChevronDown, LayoutDashboard, BarChart3, FileText, Settings, LogOut, Sun, Moon, UploadCloud } from "lucide-react";
+import { Bell, Search, Landmark, ChevronDown, LayoutDashboard, BarChart3, FileText, Settings, LogOut, Sun, Moon, UploadCloud, SearchCode } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,6 +16,7 @@ import { useTheme } from "@/hooks/use-theme";
 const navItems = [
   { label: "Dashboard", icon: LayoutDashboard, to: "/" },
   { label: "Upload", icon: UploadCloud, to: "/upload" },
+  { label: "Search", icon: SearchCode, to: "/search" },
   { label: "Results", icon: BarChart3, to: "/" },
   { label: "Logs", icon: FileText, to: "/" },
   { label: "Settings", icon: Settings, to: "/" },
