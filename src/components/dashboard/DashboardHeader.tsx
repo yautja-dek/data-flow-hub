@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Bell, Search, Landmark, ChevronDown, LayoutDashboard, BarChart3, FileText, Settings, LogOut, Sun, Moon } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { Bell, Search, Landmark, ChevronDown, LayoutDashboard, BarChart3, FileText, Settings, LogOut, Sun, Moon, UploadCloud } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,23 +14,28 @@ import { Input } from "@/components/ui/input";
 import { useTheme } from "@/hooks/use-theme";
 
 const navItems = [
-  { label: "Dashboard", icon: LayoutDashboard },
-  { label: "Results", icon: BarChart3 },
-  { label: "Logs", icon: FileText },
-  { label: "Settings", icon: Settings },
+  { label: "Dashboard", icon: LayoutDashboard, to: "/" },
+  { label: "Upload", icon: UploadCloud, to: "/upload" },
+  { label: "Results", icon: BarChart3, to: "/" },
+  { label: "Logs", icon: FileText, to: "/" },
+  { label: "Settings", icon: Settings, to: "/" },
 ];
 
 export const DashboardHeader = () => {
   const [open, setOpen] = useState(false);
   const { theme, toggle } = useTheme();
+  const navigate = useNavigate();
 
   return (
     <header className="glass-header sticky top-4 z-30 mx-4 rounded-2xl px-4 py-3 md:mx-6 md:px-6">
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="group flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl bg-secondary/70 ring-1 ring-border/60 transition-all duration-300 hover:-translate-y-0.5 hover:bg-secondary hover:ring-primary/50 hover:shadow-[0_0_24px_-6px_hsl(var(--primary)/0.4)]">
+          <Link
+            to="/"
+            className="group flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl bg-secondary/70 ring-1 ring-border/60 transition-all duration-300 hover:-translate-y-0.5 hover:bg-secondary hover:ring-primary/50 hover:shadow-[0_0_24px_-6px_hsl(var(--primary)/0.4)]"
+          >
             <Landmark className="h-5 w-5 text-primary transition-transform duration-300 group-hover:scale-110" />
-          </div>
+          </Link>
           <div className="hidden md:block">
             <p className="text-sm font-semibold tracking-tight text-foreground">Trade Pipeline</p>
             <p className="text-[11px] text-muted-foreground">Operations Console</p>
@@ -99,6 +105,7 @@ export const DashboardHeader = () => {
               {navItems.map((item) => (
                 <DropdownMenuItem
                   key={item.label}
+                  onClick={() => navigate(item.to)}
                   className="cursor-pointer rounded-lg px-2 py-2 text-sm focus:bg-secondary"
                 >
                   <item.icon className="mr-2 h-4 w-4 text-muted-foreground" />
