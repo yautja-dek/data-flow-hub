@@ -77,51 +77,51 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 222 39% 8%;
-    --foreground: 210 40% 98%;
+    --background: 220 20% 18%;
+    --foreground: 210 30% 96%;
 
-    --card: 222 35% 12%;
-    --card-foreground: 210 40% 98%;
-    --card-border: 217 30% 22%;
+    --card: 220 18% 22%;
+    --card-foreground: 210 30% 96%;
+    --card-border: 220 14% 32%;
 
-    --popover: 222 39% 11%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 220 18% 22%;
+    --popover-foreground: 210 30% 96%;
 
-    --primary: 152 76% 50%;
-    --primary-foreground: 222 47% 8%;
+    --primary: 152 60% 48%;
+    --primary-foreground: 220 25% 12%;
 
-    --secondary: 217 33% 18%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 220 16% 28%;
+    --secondary-foreground: 210 30% 96%;
 
-    --muted: 217 33% 16%;
-    --muted-foreground: 215 20% 65%;
+    --muted: 220 16% 26%;
+    --muted-foreground: 215 16% 72%;
 
-    --accent: 217 33% 20%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 220 16% 30%;
+    --accent-foreground: 210 30% 96%;
 
-    --destructive: 0 75% 60%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 70% 60%;
+    --destructive-foreground: 210 30% 96%;
 
-    --success: 152 76% 50%;
-    --success-foreground: 222 47% 8%;
-    --success-soft: 152 60% 18%;
+    --success: 152 60% 48%;
+    --success-foreground: 220 25% 12%;
+    --success-soft: 152 40% 28%;
 
-    --error: 0 75% 60%;
-    --error-foreground: 210 40% 98%;
-    --error-soft: 0 55% 22%;
+    --error: 0 70% 60%;
+    --error-foreground: 210 30% 96%;
+    --error-soft: 0 45% 32%;
 
-    --warning: 38 92% 58%;
-    --warning-foreground: 222 47% 8%;
+    --warning: 38 90% 60%;
+    --warning-foreground: 220 25% 12%;
 
-    --border: 217 30% 22%;
-    --input: 217 30% 22%;
-    --ring: 152 76% 50%;
+    --border: 220 14% 32%;
+    --input: 220 14% 32%;
+    --ring: 152 60% 48%;
 
-    --glass-bg: 222 35% 14% / 0.55;
-    --glass-border: 210 40% 98% / 0.08;
-    --glass-highlight: 210 40% 98% / 0.04;
+    --glass-bg: 220 18% 24% / 0.7;
+    --glass-border: 210 30% 96% / 0.1;
+    --glass-highlight: 210 30% 96% / 0.05;
 
-    --shadow-card: 0 8px 32px -8px hsl(222 80% 2% / 0.6), 0 2px 8px -2px hsl(222 80% 2% / 0.4);
+    --shadow-card: 0 8px 28px -10px hsl(220 30% 6% / 0.45), 0 2px 6px -2px hsl(220 30% 6% / 0.3);
 
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
@@ -157,8 +157,8 @@ All colors MUST be HSL.
   }
   .dark body {
     background-image:
-      radial-gradient(ellipse 80% 50% at 20% 0%, hsl(222 50% 14%) 0%, transparent 60%),
-      radial-gradient(ellipse 60% 50% at 100% 100%, hsl(222 50% 12%) 0%, transparent 60%);
+      radial-gradient(ellipse 80% 50% at 20% 0%, hsl(220 25% 24%) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 50% at 100% 100%, hsl(200 25% 22%) 0%, transparent 60%);
     background-attachment: fixed;
   }
 }
