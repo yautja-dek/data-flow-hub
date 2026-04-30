@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { ChevronLeft, ChevronRight, Eye, FileText, Download, Copy, CheckCircle2, Calendar, Database, Hash } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
@@ -18,6 +18,29 @@ type Row = {
   records: number;
   headers: string[];
   preview: string[][];
+};
+
+const PAGE_SIZE = 10;
+
+// Generate additional synthetic rows so paging through records is meaningful.
+const expandPreview = (seed: string[][], headers: string[], total: number) => {
+  const symbols = ["AAPL", "MSFT", "GOOGL", "TSLA", "NVDA", "AMZN", "META", "NFLX", "AMD", "INTC"];
+  const sides = ["BUY", "SELL"];
+  const rows: string[][] = [...seed];
+  const target = Math.min(total, 60); // cap synthetic generation
+  let i = rows.length;
+  while (rows.length < target) {
+    const sym = symbols[i % symbols.length];
+    const side = sides[i % 2];
+    const qty = (((i * 37) % 200) + 20).toString();
+    const price = `$${(100 + ((i * 13.7) % 400)).toFixed(2)}`;
+    const ts = `2023-11-${String(((i % 28) + 1)).padStart(2, "0")} ${String(9 + (i % 7)).padStart(2, "0")}:${String((i * 7) % 60).padStart(2, "0")}:${String((i * 11) % 60).padStart(2, "0")}`;
+    const id = `TRD-${String(10000 + i).padStart(5, "0")}`;
+    const base = [id, sym, side, qty, price, ts];
+    rows.push(base.slice(0, headers.length));
+    i++;
+  }
+  return rows;
 };
 
 const rows: Row[] = [
@@ -80,12 +103,25 @@ const rows: Row[] = [
 
 export const ProcessedFilesTable = () => {
   const [selected, setSelected] = useState<Row | null>(null);
+  const [page, setPage] = useState(0);
+
+  const fullPreview = useMemo(
+    () => (selected ? expandPreview(selected.preview, selected.headers, selected.records) : []),
+    [selected],
+  );
+  const totalPages = Math.max(1, Math.ceil(fullPreview.length / PAGE_SIZE));
+  const pageRows = fullPreview.slice(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE);
+
+  const openRow = (row: Row) => {
+    setSelected(row);
+    setPage(0);
+  };
 
   const handleCopy = () => {
     if (!selected) return;
-    const csv = [selected.headers.join(","), ...selected.preview.map((r) => r.join(","))].join("\n");
+    const csv = [selected.headers.join(","), ...pageRows.map((r) => r.join(","))].join("\n");
     navigator.clipboard.writeText(csv);
-    toast({ title: "Copied to clipboard", description: `${selected.file} preview data copied.` });
+    toast({ title: "Copied to clipboard", description: `${selected.file} — page ${page + 1} copied.` });
   };
 
   return (
@@ -113,7 +149,7 @@ export const ProcessedFilesTable = () => {
                 <td className="px-5 py-4">
                   <button
                     type="button"
-                    onClick={() => setSelected(row)}
+                    onClick={() => openRow(row)}
                     className="font-medium text-primary underline-offset-4 hover:underline"
                   >
                     {row.file}
@@ -132,7 +168,7 @@ export const ProcessedFilesTable = () => {
                       <TooltipTrigger asChild>
                         <button
                           type="button"
-                          onClick={() => setSelected(row)}
+                          onClick={() => openRow(row)}
                           className="group/btn inline-flex items-center gap-1.5 rounded-lg border border-border/60 bg-secondary/60 px-3 py-1.5 text-xs font-medium text-foreground transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/50 hover:bg-secondary hover:text-primary hover:shadow-[0_0_20px_-6px_hsl(var(--primary)/0.6)]"
                         >
                           <Eye className="h-3.5 w-3.5 transition-transform duration-300 group-hover/btn:scale-110" />
@@ -209,7 +245,7 @@ export const ProcessedFilesTable = () => {
               <div className="px-6 pb-2 pt-4">
                 <div className="mb-3 flex items-center justify-between">
                   <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                    Preview · First {selected.preview.length} rows
+                    Preview · Rows {page * PAGE_SIZE + 1}–{page * PAGE_SIZE + pageRows.length}
                   </p>
                   <div className="flex items-center gap-2">
                     <button
@@ -243,12 +279,14 @@ export const ProcessedFilesTable = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {selected.preview.map((row, i) => (
+                      {pageRows.map((row, i) => (
                         <tr
                           key={i}
                           className="border-t border-border/40 transition hover:bg-secondary/30"
                         >
-                          <td className="px-4 py-3 text-xs text-muted-foreground">{i + 1}</td>
+                          <td className="px-4 py-3 text-xs text-muted-foreground">
+                            {page * PAGE_SIZE + i + 1}
+                          </td>
                           {row.map((cell, j) => (
                             <td key={j} className="px-4 py-3 text-foreground">
                               {cell}
@@ -261,11 +299,34 @@ export const ProcessedFilesTable = () => {
                 </ScrollArea>
               </div>
 
-              <div className="flex items-center justify-between border-t border-border/50 px-6 py-3 text-xs text-muted-foreground">
+              <div className="flex items-center justify-between gap-3 border-t border-border/50 px-6 py-3 text-xs text-muted-foreground">
                 <span>
-                  Showing {selected.preview.length} of {selected.records.toLocaleString()} records
+                  Showing {page * PAGE_SIZE + 1}–{page * PAGE_SIZE + pageRows.length} of{" "}
+                  {selected.records.toLocaleString()} records
                 </span>
-                <span className="font-mono">CSV · UTF-8</span>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setPage((p) => Math.max(0, p - 1))}
+                    disabled={page === 0}
+                    className="inline-flex items-center gap-1 rounded-md border border-border/60 bg-secondary/60 px-2.5 py-1 text-foreground transition hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    <ChevronLeft className="h-3.5 w-3.5" />
+                    Prev
+                  </button>
+                  <span className="rounded-md border border-border/60 bg-secondary/40 px-2 py-1 font-mono text-foreground">
+                    {page + 1} / {totalPages}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
+                    disabled={page >= totalPages - 1}
+                    className="inline-flex items-center gap-1 rounded-md border border-border/60 bg-secondary/60 px-2.5 py-1 text-foreground transition hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    Next
+                    <ChevronRight className="h-3.5 w-3.5" />
+                  </button>
+                </div>
               </div>
             </>
           )}
