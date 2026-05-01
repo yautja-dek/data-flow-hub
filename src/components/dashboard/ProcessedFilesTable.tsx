@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
-import { ChevronLeft, ChevronRight, Eye, FileText, Download, Copy, CheckCircle2, Calendar, Database, Hash } from "lucide-react";
+import { useState } from "react";
+import { ChevronLeft, ChevronRight, Eye, FileText, CheckCircle2, Calendar, Database, Hash, ListChecks, AlertTriangle } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   Dialog,
@@ -8,8 +8,6 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { toast } from "@/hooks/use-toast";
 
 type Row = {
   file: string;
@@ -18,29 +16,8 @@ type Row = {
   records: number;
   headers: string[];
   preview: string[][];
-};
-
-const PAGE_SIZE = 10;
-
-// Generate additional synthetic rows so paging through records is meaningful.
-const expandPreview = (seed: string[][], headers: string[], total: number) => {
-  const symbols = ["AAPL", "MSFT", "GOOGL", "TSLA", "NVDA", "AMZN", "META", "NFLX", "AMD", "INTC"];
-  const sides = ["BUY", "SELL"];
-  const rows: string[][] = [...seed];
-  const target = Math.min(total, 60); // cap synthetic generation
-  let i = rows.length;
-  while (rows.length < target) {
-    const sym = symbols[i % symbols.length];
-    const side = sides[i % 2];
-    const qty = (((i * 37) % 200) + 20).toString();
-    const price = `$${(100 + ((i * 13.7) % 400)).toFixed(2)}`;
-    const ts = `2023-11-${String(((i % 28) + 1)).padStart(2, "0")} ${String(9 + (i % 7)).padStart(2, "0")}:${String((i * 7) % 60).padStart(2, "0")}:${String((i * 11) % 60).padStart(2, "0")}`;
-    const id = `TRD-${String(10000 + i).padStart(5, "0")}`;
-    const base = [id, sym, side, qty, price, ts];
-    rows.push(base.slice(0, headers.length));
-    i++;
-  }
-  return rows;
+  successCount: number;
+  errorCount: number;
 };
 
 const rows: Row[] = [
@@ -50,6 +27,8 @@ const rows: Row[] = [
     size: "2.4 MB",
     records: 12480,
     headers: ["Trade ID", "Symbol", "Side", "Quantity", "Price", "Timestamp"],
+    successCount: 12380,
+    errorCount: 100,
     preview: [
       ["TRD-00012", "AAPL", "BUY", "150", "$182.45", "2023-10-26 09:32:11"],
       ["TRD-00013", "MSFT", "SELL", "80", "$329.10", "2023-10-26 09:33:05"],
@@ -66,6 +45,8 @@ const rows: Row[] = [
     size: "3.1 MB",
     records: 15820,
     headers: ["Trade ID", "Symbol", "Side", "Quantity", "Price", "Timestamp"],
+    successCount: 15750,
+    errorCount: 70,
     preview: [
       ["TRD-00112", "AAPL", "SELL", "200", "$184.10", "2023-11-02 09:30:45"],
       ["TRD-00113", "MSFT", "BUY", "100", "$331.25", "2023-11-02 09:32:18"],
@@ -80,6 +61,8 @@ const rows: Row[] = [
     size: "1.8 MB",
     records: 9420,
     headers: ["Trade ID", "Symbol", "Side", "Quantity", "Price", "Timestamp"],
+    successCount: 9380,
+    errorCount: 40,
     preview: [
       ["TRD-00212", "AAPL", "BUY", "90", "$185.75", "2023-11-05 09:31:02"],
       ["TRD-00213", "MSFT", "BUY", "120", "$333.50", "2023-11-05 09:33:44"],
@@ -93,6 +76,8 @@ const rows: Row[] = [
     size: "1.8 MB",
     records: 9420,
     headers: ["Trade ID", "Symbol", "Side", "Quantity", "Price", "Timestamp"],
+    successCount: 9420,
+    errorCount: 0,
     preview: [
       ["TRD-00312", "AAPL", "SELL", "110", "$186.20", "2023-11-05 13:01:14"],
       ["TRD-00313", "MSFT", "BUY", "70", "$334.10", "2023-11-05 13:04:22"],
@@ -103,26 +88,8 @@ const rows: Row[] = [
 
 export const ProcessedFilesTable = () => {
   const [selected, setSelected] = useState<Row | null>(null);
-  const [page, setPage] = useState(0);
 
-  const fullPreview = useMemo(
-    () => (selected ? expandPreview(selected.preview, selected.headers, selected.records) : []),
-    [selected],
-  );
-  const totalPages = Math.max(1, Math.ceil(fullPreview.length / PAGE_SIZE));
-  const pageRows = fullPreview.slice(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE);
-
-  const openRow = (row: Row) => {
-    setSelected(row);
-    setPage(0);
-  };
-
-  const handleCopy = () => {
-    if (!selected) return;
-    const csv = [selected.headers.join(","), ...pageRows.map((r) => r.join(","))].join("\n");
-    navigator.clipboard.writeText(csv);
-    toast({ title: "Copied to clipboard", description: `${selected.file} — page ${page + 1} copied.` });
-  };
+  const openRow = (row: Row) => setSelected(row);
 
   return (
     <section className="glass-card rounded-2xl p-6">
@@ -208,7 +175,7 @@ export const ProcessedFilesTable = () => {
       </div>
 
       <Dialog open={!!selected} onOpenChange={(o) => !o && setSelected(null)}>
-        <DialogContent className="max-w-4xl border-border/60 bg-popover/95 p-0 backdrop-blur-xl">
+        <DialogContent className="max-w-2xl border-border/60 bg-popover/95 p-0 backdrop-blur-xl">
           {selected && (
             <>
               <DialogHeader className="border-b border-border/50 p-6 pb-4">
@@ -229,103 +196,70 @@ export const ProcessedFilesTable = () => {
                         <Database className="h-3 w-3" />
                         {selected.size}
                       </span>
-                      <span className="inline-flex items-center gap-1.5">
-                        <Hash className="h-3 w-3" />
-                        {selected.records.toLocaleString()} records
-                      </span>
-                      <span className="inline-flex items-center gap-1.5 rounded-full bg-success-soft px-2 py-0.5 font-semibold text-success">
-                        <CheckCircle2 className="h-3 w-3" />
-                        Success
-                      </span>
                     </DialogDescription>
                   </div>
                 </div>
               </DialogHeader>
 
-              <div className="px-6 pb-2 pt-4">
-                <div className="mb-3 flex items-center justify-between">
-                  <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                    Preview · Rows {page * PAGE_SIZE + 1}–{page * PAGE_SIZE + pageRows.length}
-                  </p>
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={handleCopy}
-                      className="inline-flex items-center gap-1.5 rounded-lg border border-border/60 bg-secondary/60 px-3 py-1.5 text-xs font-medium text-foreground transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/50 hover:text-primary hover:shadow-[0_0_20px_-6px_hsl(var(--primary)/0.6)]"
-                    >
-                      <Copy className="h-3.5 w-3.5" />
-                      Copy
-                    </button>
-                    <button
-                      type="button"
-                      className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_0_24px_-6px_hsl(var(--primary)/0.8)]"
-                    >
-                      <Download className="h-3.5 w-3.5" />
-                      Download
-                    </button>
+              <div className="grid grid-cols-1 gap-3 p-6 sm:grid-cols-2">
+                <div className="rounded-xl border border-border/50 bg-secondary/30 p-4">
+                  <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                    <FileText className="h-3.5 w-3.5" />
+                    File Name
                   </div>
+                  <p className="mt-2 truncate text-sm font-semibold text-foreground" title={selected.file}>
+                    {selected.file}
+                  </p>
                 </div>
 
-                <ScrollArea className="h-[400px] rounded-xl border border-border/50">
-                  <table className="w-full text-sm">
-                    <thead className="sticky top-0 bg-secondary/80 text-left text-xs uppercase tracking-wide text-muted-foreground backdrop-blur">
-                      <tr>
-                        <th className="px-4 py-3 font-medium">#</th>
-                        {selected.headers.map((h) => (
-                          <th key={h} className="px-4 py-3 font-medium">
-                            {h}
-                          </th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {pageRows.map((row, i) => (
-                        <tr
-                          key={i}
-                          className="border-t border-border/40 transition hover:bg-secondary/30"
-                        >
-                          <td className="px-4 py-3 text-xs text-muted-foreground">
-                            {page * PAGE_SIZE + i + 1}
-                          </td>
-                          {row.map((cell, j) => (
-                            <td key={j} className="px-4 py-3 text-foreground">
-                              {cell}
-                            </td>
-                          ))}
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </ScrollArea>
-              </div>
+                <div className="rounded-xl border border-border/50 bg-secondary/30 p-4">
+                  <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                    <Hash className="h-3.5 w-3.5" />
+                    Total Fields
+                  </div>
+                  <p className="mt-2 text-2xl font-bold text-foreground">
+                    {selected.records.toLocaleString()}
+                  </p>
+                </div>
 
-              <div className="flex items-center justify-between gap-3 border-t border-border/50 px-6 py-3 text-xs text-muted-foreground">
-                <span>
-                  Showing {page * PAGE_SIZE + 1}–{page * PAGE_SIZE + pageRows.length} of{" "}
-                  {selected.records.toLocaleString()} records
-                </span>
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setPage((p) => Math.max(0, p - 1))}
-                    disabled={page === 0}
-                    className="inline-flex items-center gap-1 rounded-md border border-border/60 bg-secondary/60 px-2.5 py-1 text-foreground transition hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-40"
-                  >
-                    <ChevronLeft className="h-3.5 w-3.5" />
-                    Prev
-                  </button>
-                  <span className="rounded-md border border-border/60 bg-secondary/40 px-2 py-1 font-mono text-foreground">
-                    {page + 1} / {totalPages}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
-                    disabled={page >= totalPages - 1}
-                    className="inline-flex items-center gap-1 rounded-md border border-border/60 bg-secondary/60 px-2.5 py-1 text-foreground transition hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-40"
-                  >
-                    Next
-                    <ChevronRight className="h-3.5 w-3.5" />
-                  </button>
+                <div className="rounded-xl border border-success/30 bg-success-soft/40 p-4">
+                  <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-success">
+                    <ListChecks className="h-3.5 w-3.5" />
+                    Success Count
+                  </div>
+                  <p className="mt-2 text-2xl font-bold text-success">
+                    {selected.successCount.toLocaleString()}
+                  </p>
+                </div>
+
+                <div className="rounded-xl border border-destructive/30 bg-destructive/10 p-4">
+                  <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-destructive">
+                    <AlertTriangle className="h-3.5 w-3.5" />
+                    Error Count
+                  </div>
+                  <p className="mt-2 text-2xl font-bold text-destructive">
+                    {selected.errorCount.toLocaleString()}
+                  </p>
+                </div>
+
+                <div className="rounded-xl border border-border/50 bg-secondary/30 p-4 sm:col-span-2">
+                  <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                    <CheckCircle2 className="h-3.5 w-3.5" />
+                    Status
+                  </div>
+                  <div className="mt-2">
+                    {selected.errorCount === 0 ? (
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-success-soft px-3 py-1 text-xs font-semibold text-success">
+                        <span className="h-1.5 w-1.5 rounded-full bg-success" />
+                        Success
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-warning/15 px-3 py-1 text-xs font-semibold text-warning">
+                        <span className="h-1.5 w-1.5 rounded-full bg-warning" />
+                        Partial Success
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
             </>
