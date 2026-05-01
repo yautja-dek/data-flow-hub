@@ -178,88 +178,104 @@ export const ProcessedFilesTable = () => {
         <DialogContent className="max-w-2xl border-border/60 bg-popover/95 p-0 backdrop-blur-xl">
           {selected && (
             <>
-              <DialogHeader className="border-b border-border/50 p-6 pb-4">
-                <div className="flex items-start gap-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 ring-1 ring-primary/30">
+              <DialogHeader className="border-b border-border/50 p-6 pb-5">
+                <div className="flex items-center gap-4">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 ring-1 ring-primary/30">
                     <FileText className="h-5 w-5 text-primary" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <DialogTitle className="truncate text-lg font-semibold text-foreground">
-                      {selected.file}
+                    <DialogTitle className="text-base font-semibold text-foreground">
+                      File Details
                     </DialogTitle>
-                    <DialogDescription className="mt-1 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
-                      <span className="inline-flex items-center gap-1.5">
-                        <Calendar className="h-3 w-3" />
-                        {selected.date}
-                      </span>
-                      <span className="inline-flex items-center gap-1.5">
-                        <Database className="h-3 w-3" />
-                        {selected.size}
-                      </span>
+                    <DialogDescription className="text-xs text-muted-foreground">
+                      Processing summary and status overview
                     </DialogDescription>
                   </div>
+                  {selected.errorCount === 0 ? (
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-success-soft px-3 py-1 text-xs font-semibold text-success">
+                      <span className="h-1.5 w-1.5 rounded-full bg-success" />
+                      Success
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-warning/15 px-3 py-1 text-xs font-semibold text-warning">
+                      <span className="h-1.5 w-1.5 rounded-full bg-warning" />
+                      Partial
+                    </span>
+                  )}
                 </div>
               </DialogHeader>
 
-              <div className="grid grid-cols-1 gap-3 p-6 sm:grid-cols-2">
-                <div className="rounded-xl border border-border/50 bg-secondary/30 p-4">
-                  <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                    <FileText className="h-3.5 w-3.5" />
-                    File Name
+              <div className="space-y-5 p-6">
+                {/* File name + date row */}
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  <div className="rounded-xl border border-border/50 bg-secondary/30 p-4">
+                    <div className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                      <FileText className="h-3.5 w-3.5" />
+                      File Name
+                    </div>
+                    <p
+                      className="mt-2 truncate text-sm font-semibold text-foreground"
+                      title={selected.file}
+                    >
+                      {selected.file}
+                    </p>
                   </div>
-                  <p className="mt-2 truncate text-sm font-semibold text-foreground" title={selected.file}>
-                    {selected.file}
-                  </p>
+
+                  <div className="rounded-xl border border-border/50 bg-secondary/30 p-4">
+                    <div className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                      <Calendar className="h-3.5 w-3.5" />
+                      Upload Date
+                    </div>
+                    <p className="mt-2 text-sm font-semibold text-foreground">
+                      {selected.date}
+                    </p>
+                  </div>
                 </div>
 
-                <div className="rounded-xl border border-border/50 bg-secondary/30 p-4">
-                  <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                    <Hash className="h-3.5 w-3.5" />
-                    Total Fields
+                {/* Stats row */}
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                  <div className="rounded-xl border border-border/50 bg-secondary/30 p-4">
+                    <div className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                      <Hash className="h-3.5 w-3.5" />
+                      Total Fields
+                    </div>
+                    <p className="mt-2 text-2xl font-bold tabular-nums text-foreground">
+                      {selected.records.toLocaleString()}
+                    </p>
                   </div>
-                  <p className="mt-2 text-2xl font-bold text-foreground">
-                    {selected.records.toLocaleString()}
-                  </p>
+
+                  <div className="rounded-xl border border-success/30 bg-success-soft/40 p-4">
+                    <div className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-wider text-success">
+                      <ListChecks className="h-3.5 w-3.5" />
+                      Success
+                    </div>
+                    <p className="mt-2 text-2xl font-bold tabular-nums text-success">
+                      {selected.successCount.toLocaleString()}
+                    </p>
+                  </div>
+
+                  <div className="rounded-xl border border-destructive/30 bg-destructive/10 p-4">
+                    <div className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-wider text-destructive">
+                      <AlertTriangle className="h-3.5 w-3.5" />
+                      Errors
+                    </div>
+                    <p className="mt-2 text-2xl font-bold tabular-nums text-destructive">
+                      {selected.errorCount.toLocaleString()}
+                    </p>
+                  </div>
                 </div>
 
-                <div className="rounded-xl border border-success/30 bg-success-soft/40 p-4">
-                  <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-success">
-                    <ListChecks className="h-3.5 w-3.5" />
-                    Success Count
-                  </div>
-                  <p className="mt-2 text-2xl font-bold text-success">
-                    {selected.successCount.toLocaleString()}
-                  </p>
-                </div>
-
-                <div className="rounded-xl border border-destructive/30 bg-destructive/10 p-4">
-                  <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-destructive">
-                    <AlertTriangle className="h-3.5 w-3.5" />
-                    Error Count
-                  </div>
-                  <p className="mt-2 text-2xl font-bold text-destructive">
-                    {selected.errorCount.toLocaleString()}
-                  </p>
-                </div>
-
-                <div className="rounded-xl border border-border/50 bg-secondary/30 p-4 sm:col-span-2">
-                  <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                {/* Status footer */}
+                <div className="flex items-center justify-between rounded-xl border border-border/50 bg-secondary/20 px-4 py-3">
+                  <div className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
                     <CheckCircle2 className="h-3.5 w-3.5" />
                     Status
                   </div>
-                  <div className="mt-2">
-                    {selected.errorCount === 0 ? (
-                      <span className="inline-flex items-center gap-1.5 rounded-full bg-success-soft px-3 py-1 text-xs font-semibold text-success">
-                        <span className="h-1.5 w-1.5 rounded-full bg-success" />
-                        Success
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center gap-1.5 rounded-full bg-warning/15 px-3 py-1 text-xs font-semibold text-warning">
-                        <span className="h-1.5 w-1.5 rounded-full bg-warning" />
-                        Partial Success
-                      </span>
-                    )}
-                  </div>
+                  <span className="text-xs font-medium text-muted-foreground">
+                    {selected.successCount.toLocaleString()} of{" "}
+                    {selected.records.toLocaleString()} records processed (
+                    {((selected.successCount / selected.records) * 100).toFixed(1)}%)
+                  </span>
                 </div>
               </div>
             </>
