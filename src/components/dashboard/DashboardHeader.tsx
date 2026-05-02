@@ -114,15 +114,6 @@ export const DashboardHeader = () => {
         </div>
 
         <div className="flex items-center gap-2.5">
-          <button
-            type="button"
-            aria-label="Logout"
-            title="Logout"
-            className="group relative flex h-10 w-10 items-center justify-center rounded-xl bg-secondary/60 text-foreground ring-1 ring-border/60 transition-all duration-300 hover:-translate-y-0.5 hover:bg-destructive/10 hover:text-destructive hover:ring-destructive/50 hover:shadow-[0_0_24px_-6px_hsl(var(--destructive)/0.5)]"
-          >
-            <LogOut className="h-4 w-4 transition-transform duration-300 group-hover:scale-110" />
-          </button>
-
           {!isDashboard && (
             <Link
               to="/"
@@ -134,6 +125,15 @@ export const DashboardHeader = () => {
               <span className="hidden sm:inline">Dashboard</span>
             </Link>
           )}
+
+          <button
+            type="button"
+            aria-label="Logout"
+            title="Logout"
+            className="group relative flex h-10 w-10 items-center justify-center rounded-xl bg-secondary/60 text-foreground ring-1 ring-border/60 transition-all duration-300 hover:-translate-y-0.5 hover:bg-destructive/10 hover:text-destructive hover:ring-destructive/50 hover:shadow-[0_0_24px_-6px_hsl(var(--destructive)/0.5)]"
+          >
+            <LogOut className="h-4 w-4 transition-transform duration-300 group-hover:scale-110" />
+          </button>
         </div>
       </div>
     </header>
