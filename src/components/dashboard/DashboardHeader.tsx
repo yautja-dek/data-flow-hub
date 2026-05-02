@@ -1,15 +1,20 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Bell, Search, Landmark, ChevronDown, LayoutDashboard, BarChart3, FileText, Settings, LogOut, Sun, Moon, UploadCloud, SearchCode } from "lucide-react";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+  Bell,
+  Search,
+  Landmark,
+  LayoutDashboard,
+  BarChart3,
+  Settings,
+  LogOut,
+  Sun,
+  Moon,
+  UploadCloud,
+  SearchCode,
+  Menu,
+  X,
+} from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useTheme } from "@/hooks/use-theme";
 
@@ -22,27 +27,76 @@ const navItems = [
 ];
 
 export const DashboardHeader = () => {
-  const [open, setOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const { theme, toggle } = useTheme();
   const navigate = useNavigate();
 
   return (
-    <header className="glass-header sticky top-4 z-30 mx-4 rounded-2xl px-4 py-3 md:mx-6 md:px-6">
+    <header className="glass-header fixed inset-x-4 top-4 z-40 rounded-2xl px-4 py-3 md:inset-x-6 md:px-6">
       <div className="flex items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
+        {/* Left: Logo + Hamburger group with hover-reveal nav */}
+        <div
+          className="group/nav relative flex items-center gap-2"
+          onMouseLeave={() => setMenuOpen(false)}
+        >
           <Link
             to="/"
             className="group flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl bg-secondary/70 ring-1 ring-border/60 transition-all duration-300 hover:-translate-y-0.5 hover:bg-secondary hover:ring-primary/50 hover:shadow-[0_0_24px_-6px_hsl(var(--primary)/0.4)]"
           >
             <Landmark className="h-5 w-5 text-primary transition-transform duration-300 group-hover:scale-110" />
           </Link>
-          <div className="hidden md:block">
+          <div className="hidden lg:block">
             <p className="text-sm font-semibold tracking-tight text-foreground">Trade Pipeline</p>
             <p className="text-[11px] text-muted-foreground">Operations Console</p>
           </div>
+
+          {/* Hamburger trigger — also reveals on hover */}
+          <button
+            type="button"
+            onClick={() => setMenuOpen((v) => !v)}
+            onMouseEnter={() => setMenuOpen(true)}
+            aria-label="Open navigation"
+            aria-expanded={menuOpen}
+            className="ml-1 flex h-10 w-10 items-center justify-center rounded-xl bg-secondary/60 text-foreground ring-1 ring-border/60 transition-all duration-300 hover:-translate-y-0.5 hover:bg-secondary hover:ring-primary/50 hover:shadow-[0_0_24px_-6px_hsl(var(--primary)/0.5)]"
+          >
+            {menuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+          </button>
+
+          {/* Hover/click reveal navigation panel */}
+          <div
+            className={`absolute left-0 top-full z-50 mt-2 min-w-[220px] origin-top-left rounded-xl border border-border/60 bg-popover/95 p-1.5 shadow-lg backdrop-blur-xl transition-all duration-200 ${
+              menuOpen
+                ? "pointer-events-auto translate-y-0 scale-100 opacity-100"
+                : "pointer-events-none -translate-y-1 scale-[0.98] opacity-0"
+            }`}
+            onMouseEnter={() => setMenuOpen(true)}
+          >
+            <p className="px-2 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+              Navigation
+            </p>
+            <ul className="flex flex-col">
+              {navItems.map((item) => (
+                <li key={item.label}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      navigate(item.to);
+                      setMenuOpen(false);
+                    }}
+                    className="group flex w-full items-center gap-3 rounded-lg px-2 py-2 text-sm text-foreground transition-colors hover:bg-secondary"
+                  >
+                    <span className="flex h-7 w-7 items-center justify-center rounded-md bg-secondary/70 ring-1 ring-border/60 transition-colors group-hover:bg-primary/10 group-hover:ring-primary/40">
+                      <item.icon className="h-3.5 w-3.5 text-muted-foreground transition-colors group-hover:text-primary" />
+                    </span>
+                    <span className="font-medium">{item.label}</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
 
-        <div className="relative hidden max-w-md flex-1 md:block">
+        <div className="relative hidden max-w-md flex-1 lg:block">
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             placeholder="Search files, records, batches…"
@@ -50,7 +104,7 @@ export const DashboardHeader = () => {
           />
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
           <button
             type="button"
             onClick={toggle}
@@ -75,50 +129,14 @@ export const DashboardHeader = () => {
             </span>
           </button>
 
-          <DropdownMenu open={open} onOpenChange={setOpen}>
-            <DropdownMenuTrigger asChild>
-              <button
-                type="button"
-                className="flex items-center gap-3 rounded-xl bg-secondary/40 px-2 py-1.5 ring-1 ring-border/60 transition hover:bg-secondary/70"
-              >
-                <Avatar className="h-9 w-9 ring-2 ring-primary/30">
-                  <AvatarImage src="https://i.pravatar.cc/80?img=47" alt="Sarah Chen" />
-                  <AvatarFallback>SC</AvatarFallback>
-                </Avatar>
-                <div className="hidden text-left md:block">
-                  <p className="text-sm font-semibold leading-tight text-foreground">Sarah Chen</p>
-                  <p className="text-[11px] leading-tight text-muted-foreground">Admin</p>
-                </div>
-                <ChevronDown
-                  className={`h-4 w-4 text-muted-foreground transition-transform ${open ? "rotate-180" : ""}`}
-                />
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-              align="end"
-              sideOffset={10}
-              className="w-56 rounded-xl border-border/60 bg-popover/90 p-1.5 backdrop-blur-xl"
-            >
-              <DropdownMenuLabel className="px-2 py-1.5 text-xs font-medium text-muted-foreground">
-                Navigation
-              </DropdownMenuLabel>
-              {navItems.map((item) => (
-                <DropdownMenuItem
-                  key={item.label}
-                  onClick={() => navigate(item.to)}
-                  className="cursor-pointer rounded-lg px-2 py-2 text-sm focus:bg-secondary"
-                >
-                  <item.icon className="mr-2 h-4 w-4 text-muted-foreground" />
-                  {item.label}
-                </DropdownMenuItem>
-              ))}
-              <DropdownMenuSeparator className="my-1 bg-border/60" />
-              <DropdownMenuItem className="cursor-pointer rounded-lg px-2 py-2 text-sm text-destructive focus:bg-destructive/10 focus:text-destructive">
-                <LogOut className="mr-2 h-4 w-4" />
-                Logout
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <button
+            type="button"
+            aria-label="Logout"
+            title="Logout"
+            className="group relative flex h-10 w-10 items-center justify-center rounded-xl bg-secondary/60 text-foreground ring-1 ring-border/60 transition-all duration-300 hover:-translate-y-0.5 hover:bg-destructive/10 hover:text-destructive hover:ring-destructive/50 hover:shadow-[0_0_24px_-6px_hsl(var(--destructive)/0.5)]"
+          >
+            <LogOut className="h-4 w-4 transition-transform duration-300 group-hover:scale-110" />
+          </button>
         </div>
       </div>
     </header>
