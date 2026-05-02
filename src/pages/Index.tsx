@@ -9,10 +9,10 @@ import ProcessedFilesTable from "@/components/dashboard/ProcessedFilesTable";
 
 const Index = () => {
   return (
-    <div className="theme-transition min-h-screen pb-12">
+    <div className="theme-transition min-h-screen pb-24 pt-24">
       <DashboardHeader />
 
-      <main className="mx-auto w-full max-w-[1400px] px-4 pt-6 md:px-6">
+      <main className="mx-auto w-full max-w-[1400px] px-4 md:px-6">
         <div className="mb-6 flex items-end justify-between">
           <div>
             <h1 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">
