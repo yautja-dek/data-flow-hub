@@ -1,27 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
-type Theme = "light" | "dark";
-
-const STORAGE_KEY = "dashboard-theme";
-
-const getInitialTheme = (): Theme => {
-  if (typeof window === "undefined") return "light";
-  const stored = window.localStorage.getItem(STORAGE_KEY) as Theme | null;
-  if (stored === "light" || stored === "dark") return stored;
-  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-};
-
+// App is locked to dark mode.
 export const useTheme = () => {
-  const [theme, setTheme] = useState<Theme>(getInitialTheme);
-
   useEffect(() => {
-    const root = document.documentElement;
-    root.classList.toggle("dark", theme === "dark");
-    window.localStorage.setItem(STORAGE_KEY, theme);
-  }, [theme]);
+    document.documentElement.classList.add("dark");
+  }, []);
 
-  return {
-    theme,
-    toggle: () => setTheme((t) => (t === "dark" ? "light" : "dark")),
-  };
+  return { theme: "dark" as const, toggle: () => {} };
 };
