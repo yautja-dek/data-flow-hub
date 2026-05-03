@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { CloudUpload, FileText, Info, Sparkles, X, CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import DashboardFooter from "@/components/dashboard/DashboardFooter";
+import SideNav from "@/components/dashboard/SideNav";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "@/hooks/use-toast";
@@ -89,8 +90,9 @@ const Upload = () => {
   return (
     <div className="theme-transition min-h-screen pb-24 pt-24">
       <DashboardHeader />
+      <SideNav />
 
-      <main className="mx-auto w-full max-w-[1400px] px-4 md:px-6">
+      <main className="mx-auto w-full max-w-[1400px] px-4 md:px-6 lg:pl-24">
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
